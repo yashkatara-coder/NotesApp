@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-
-
 class NoteCard extends StatelessWidget {
-  final Map<String,dynamic> note;
+  final Map<String, dynamic> note;
   final Function onDelete;
   final Function onTap;
   final List<Color> noteColors;
-
+  final TextSpan? titleSpan;
+  final TextSpan? contentSpan;
 
   const NoteCard({
     super.key,
@@ -15,15 +14,16 @@ class NoteCard extends StatelessWidget {
     required this.onDelete,
     required this.onTap,
     required this.noteColors,
+    this.titleSpan,
+    this.contentSpan,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colorsIndex=note['color'] as int;
-
+    final colorsIndex = note['color'] as int;
 
     return GestureDetector(
-      onTap: ()=>onTap(),
+      onTap: () => onTap(),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -40,45 +40,51 @@ class NoteCard extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            const SizedBox(height: 8,),
+            const SizedBox(height: 8),
 
-            Text(
-              note['title'],
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black87
-              ),
+            RichText(
+              text: titleSpan ??
+                  TextSpan(
+                    text: note['title'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black87,
+                    ),
+                  ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
 
-            const SizedBox(height: 8,),
+            const SizedBox(height: 8),
 
             Expanded(
-                child: Text(
-                  note['description'],
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    height: 1.5,
-                  ),
-                  overflow: TextOverflow.fade,
-                )
+              child: RichText(
+                text: contentSpan ??
+                    TextSpan(
+                      text: note['description'],
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                overflow: TextOverflow.fade,
+              ),
             ),
-
 
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
                   icon: const Icon(
-                    Icons.delete_outline,color: Colors.black54,size: 20,
+                    Icons.delete_outline,
+                    color: Colors.black54,
+                    size: 20,
                   ),
                   onPressed: () => onDelete(),
-                )
+                ),
               ],
-            )
-
+            ),
           ],
         ),
       ),
